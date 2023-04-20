@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 #include "Matrix4x4.h"
 
 class MyMatrix4x4
@@ -9,19 +9,25 @@ public:
 private:
 	Matrix4x4 result;
 	const int num;
+	//	å€¤ã®åˆæœŸåŒ–
+	void Reset();
+
 public:
-	//	‰ÁZ
+	//	åŠ ç®—
 	Matrix4x4 Add(const Matrix4x4& m1,const Matrix4x4& m2);
-	//	Œ¸Z
+	//	æ¸›ç®—
 	Matrix4x4 Subtract(const Matrix4x4& m1,const Matrix4x4& m2);
-	//	s—ñ‚ÌÏ
+	//	è¡Œåˆ—ã®ç©
 	Matrix4x4 Multiply(const Matrix4x4& m1, const Matrix4x4& m2);
-	//	‹ts—ñ
+	//	é€†è¡Œåˆ—
 	Matrix4x4 Inverse(const Matrix4x4& m);
-	//	“]’us—ñ
+	//	è»¢ç½®è¡Œåˆ—
 	Matrix4x4 Transpose(const Matrix4x4& m);
-	//	’PˆÊs—ñ‚Ìì¬
+	//	å˜ä½è¡Œåˆ—ã®ä½œæˆ
 	Matrix4x4 MakeIdentity4x4();
 
 };
 
+static const int kRowHeight = 20;
+static const int kColumnWidth = 60;
+void MatrixScreenPrintf(int x, int y, const Matrix4x4& matrix, const char* text);

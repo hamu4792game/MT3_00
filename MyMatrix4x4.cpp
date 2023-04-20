@@ -1,4 +1,5 @@
-#include "MyMatrix4x4.h"
+ï»¿#include "MyMatrix4x4.h"
+#include <Novice.h>
 
 MyMatrix4x4::MyMatrix4x4():num(4) {
 	for (int y = 0; y < num; y++)
@@ -14,8 +15,19 @@ MyMatrix4x4::~MyMatrix4x4() {
 
 }
 
-//	‰ÁŽZ
+void MyMatrix4x4::Reset() {
+	for (int y = 0; y < num; y++)
+	{
+		for (int x = 0; x < num; x++)
+		{
+			result.m[y][x] = 0.0f;
+		}
+	}
+}
+
+//	åŠ ç®—
 Matrix4x4 MyMatrix4x4::Add(const Matrix4x4& m1, const Matrix4x4& m2) {
+	Reset();
 	for (int y = 0; y < num; y++)
 	{
 		for (int x = 0; x < num; x++)
@@ -26,8 +38,9 @@ Matrix4x4 MyMatrix4x4::Add(const Matrix4x4& m1, const Matrix4x4& m2) {
 
 	return result;
 }
-//	Œ¸ŽZ
+//	æ¸›ç®—
 Matrix4x4 MyMatrix4x4::Subtract(const Matrix4x4& m1, const Matrix4x4& m2) {
+	Reset();
 	for (int y = 0; y < num; y++)
 	{
 		for (int x = 0; x < num; x++)
@@ -38,8 +51,17 @@ Matrix4x4 MyMatrix4x4::Subtract(const Matrix4x4& m1, const Matrix4x4& m2) {
 
 	return result;
 }
-//	s—ñ‚ÌÏ
+//	è¡Œåˆ—ã®ç©
 Matrix4x4 MyMatrix4x4::Multiply(const Matrix4x4& m1, const Matrix4x4& m2) {
+	Reset();
+	for (int y = 0; y < num; y++)
+	{
+		for (int x = 0; x < num; x++)
+		{
+			result.m[y][x] = 0.0f;
+		}
+	}
+
 	for (int z = 0; z < num; z++)
 	{
 		for (int y = 0; y < num; y++)
@@ -53,8 +75,9 @@ Matrix4x4 MyMatrix4x4::Multiply(const Matrix4x4& m1, const Matrix4x4& m2) {
 
 	return result;
 }
-//	‹ts—ñ
+//	é€†è¡Œåˆ—
 Matrix4x4 MyMatrix4x4::Inverse(const Matrix4x4& m) {
+	Reset();
 	float A = 0.0f;
 	A = m.m[0][0] * m.m[1][1] * m.m[2][2] * m.m[3][3] +
 		m.m[0][0] * m.m[1][2] * m.m[2][3] * m.m[3][1] +
@@ -188,9 +211,9 @@ Matrix4x4 MyMatrix4x4::Inverse(const Matrix4x4& m) {
 
 	return result;
 }
-//	“]’us—ñ
+//	è»¢ç½®è¡Œåˆ—
 Matrix4x4 MyMatrix4x4::Transpose(const Matrix4x4& m) {
-
+	Reset();
 	for (int y = 0; y < num; y++) {
 		for (int x = 0; x < num; x++) {
 			result.m[y][x] = m.m[x][y];
@@ -199,15 +222,15 @@ Matrix4x4 MyMatrix4x4::Transpose(const Matrix4x4& m) {
 
 	return result;
 }
-//	’PˆÊs—ñ‚Ìì¬
+//	å˜ä½è¡Œåˆ—ã®ä½œæˆ
 Matrix4x4 MyMatrix4x4::MakeIdentity4x4() {
-
+	Reset();
 	for (int y = 0; y < 4; y++) {
 		for (int x = 0; x < 4; x++) {
 			if (y < 1 && x < 1) {
 				result.m[y][x] = 1.0f;
 			}
-			else if (y = x) {
+			else if (y == x) {
 				result.m[y][x] = 1.0f;
 			}
 			else {
@@ -217,4 +240,15 @@ Matrix4x4 MyMatrix4x4::MakeIdentity4x4() {
 	}
 
 	return result;
+}
+
+void MatrixScreenPrintf(int x, int y, const Matrix4x4& matrix, const char* text) {
+	Novice::ScreenPrintf(x, y, text);
+	for (int row = 0; row < 4; row++)
+	{
+		for (int column = 0; column < 4; column++)
+		{
+			Novice::ScreenPrintf(x + column * kColumnWidth, y + (row + 1) * kRowHeight, "%6.02f", matrix.m[row][column]);
+		}
+	}
 }
