@@ -1,4 +1,5 @@
 #include <Novice.h>
+#include "MyMatrix4x4.h"
 
 const char* kWindowTitle = "LE2A_17_マツイユウセイ";
 
@@ -11,6 +12,7 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR lpCmdLine, _In
 	// キー入力結果を受け取る箱
 	char keys[256] = {0};
 	char preKeys[256] = {0};
+
 
 	// ウィンドウの×ボタンが押されるまでループ
 	while (Novice::ProcessMessage() == 0) {
