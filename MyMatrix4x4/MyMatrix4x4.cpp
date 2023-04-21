@@ -327,6 +327,27 @@ Matrix4x4 MyMatrix4x4::MakeRotateZMatrix(float radian)
 	return result;
 }
 
+Matrix4x4 MyMatrix4x4::MakeAffineMatrix(const Vector3& scale, const Vector3& rotate, const Vector3& translate)
+{
+	Reset();
+	Matrix4x4 rotateMatrix;
+	rotateMatrix = Multiply(MakeRotateXMatrix(rotate.x), Multiply(MakeRotateYMatrix(rotate.y), MakeRotateZMatrix(rotate.z)));
+	result = rotateMatrix;
+
+	
+	for (int i = 0; i < 3; i++)
+	{
+		result.m[0][i] = scale.x * rotateMatrix.m[0][i];
+		result.m[1][i] = scale.y * rotateMatrix.m[1][i];
+		result.m[2][i] = scale.z * rotateMatrix.m[2][i];
+	}
+	result.m[3][0] = translate.x;
+	result.m[3][1] = translate.y;
+	result.m[3][2] = translate.z;
+
+	return result;
+}
+
 void MatrixScreenPrintf(int x, int y, const Matrix4x4& matrix, const char* text) {
 	Novice::ScreenPrintf(x, y, text);
 	for (int row = 0; row < 4; row++)
