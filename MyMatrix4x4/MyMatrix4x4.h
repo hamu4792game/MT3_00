@@ -1,5 +1,6 @@
 ﻿#pragma once
 #include "Matrix4x4.h"
+#include "Vector3.h"
 
 class MyMatrix4x4
 {
@@ -8,6 +9,7 @@ public:
 	~MyMatrix4x4();
 private:
 	Matrix4x4 result;
+	Vector3 resultVec;
 	const int num;
 	//	値の初期化
 	void Reset();
@@ -25,9 +27,17 @@ public:
 	Matrix4x4 Transpose(const Matrix4x4& m);
 	//	単位行列の作成
 	Matrix4x4 MakeIdentity4x4();
-
+	//	平行移動行列
+	Matrix4x4 MakeTranslateMatrix(const Vector3& translate);
+	//	拡大縮小行列
+	Matrix4x4 MakeScaleMatrix(const Vector3& scale);
+	//	座標変換
+	Vector3 Transform(const Vector3& vector, const Matrix4x4& matrix);
 };
 
 static const int kRowHeight = 20;
 static const int kColumnWidth = 60;
+//	行列の描画
 void MatrixScreenPrintf(int x, int y, const Matrix4x4& matrix, const char* text);
+//	ベクトルの描画
+void VectorScreenPrintf(int x, int y, Vector3 vector, const char* text);
