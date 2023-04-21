@@ -1,4 +1,4 @@
-﻿#include "MyMatrix4x4.h"
+﻿#include "MyMatrix4x4/MyMatrix4x4.h"
 #include <Novice.h>
 
 MyMatrix4x4::MyMatrix4x4():num(4) {

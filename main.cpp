@@ -1,5 +1,5 @@
 #include <Novice.h>
-#include "MyMatrix4x4.h"
+#include "MyMatrix4x4/MyMatrix4x4.h"
 
 const char* kWindowTitle = "LE2A_17_マツイユウセイ";
 
