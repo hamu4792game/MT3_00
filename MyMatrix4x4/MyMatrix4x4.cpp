@@ -1,6 +1,7 @@
 ﻿#include "MyMatrix4x4/MyMatrix4x4.h"
 #include <Novice.h>
 #include <cassert>
+#include <cmath>
 
 MyMatrix4x4::MyMatrix4x4():num(4) {
 	for (int y = 0; y < num; y++)
@@ -279,6 +280,51 @@ Vector3 MyMatrix4x4::Transform(const Vector3& vector, const Matrix4x4& matrix)
 	resultVec.z /= w;
 
 	return resultVec;
+}
+
+Matrix4x4 MyMatrix4x4::MakeRotateXMatrix(float radian)
+{
+	Reset();
+	result.m[0][0] = 1.0f;
+	result.m[3][3] = 1.0f;
+
+	result.m[1][1] = std::cosf(radian);
+	result.m[2][2] = std::cosf(radian);
+
+	result.m[2][1] = -std::sinf(radian);
+	result.m[1][2] = std::sinf(radian);
+
+	return result;
+}
+
+Matrix4x4 MyMatrix4x4::MakeRotateYMatrix(float radian)
+{
+	Reset();
+	result.m[1][1] = 1.0f;
+	result.m[3][3] = 1.0f;
+
+	result.m[0][0] = std::cosf(radian);
+	result.m[2][2] = std::cosf(radian);
+
+	result.m[0][2] = -std::sinf(radian);
+	result.m[2][0] = std::sinf(radian);
+
+	return result;
+}
+
+Matrix4x4 MyMatrix4x4::MakeRotateZMatrix(float radian)
+{
+	Reset();
+	result.m[2][2] = 1.0f;
+	result.m[3][3] = 1.0f;
+
+	result.m[0][0] = std::cosf(radian);
+	result.m[1][1] = std::cosf(radian);
+
+	result.m[1][0] = -std::sinf(radian);
+	result.m[0][1] = std::sinf(radian);
+
+	return result;
 }
 
 void MatrixScreenPrintf(int x, int y, const Matrix4x4& matrix, const char* text) {
