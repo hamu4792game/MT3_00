@@ -390,6 +390,15 @@ Matrix4x4 MyMatrix4x4::MakeViewportMatrix(float left, float top, float width, fl
 	return result;
 }
 
+Vector3 MyMatrix4x4::Cross(const Vector3& v1, const Vector3& v2)
+{
+	resultVec = { 0.0f,0.0f,0.0f };
+	resultVec.x = (v1.y * v2.z) - (v1.z * v2.y);
+	resultVec.y = (v1.z * v2.x) - (v1.x * v2.z);
+	resultVec.z = (v1.x * v2.y) - (v1.y * v2.x);
+	return resultVec;
+}
+
 void MatrixScreenPrintf(int x, int y, const Matrix4x4& matrix, const char* text) {
 	Novice::ScreenPrintf(x, y, text);
 	for (int row = 0; row < 4; row++)
