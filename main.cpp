@@ -11,7 +11,7 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR /*lpCmdLine*/,
 	// ライブラリの初期化
 	const int kWindowWidth = 1280;
 	const int kWindowHeight = 720;
-	Novice::Initialize(kWindowTitle, 1280, 720);
+	Novice::Initialize(kWindowTitle, kWindowWidth, kWindowHeight);
 
 	// キー入力結果を受け取る箱
 	char keys[256] = {0};
@@ -35,6 +35,8 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR /*lpCmdLine*/,
 		{-50.0f,-50.0f,0.0f},
 		{50.0f,-50.0f,0.0f}
 	};
+
+	Vector3 cross{};
 
 	// ウィンドウの×ボタンが押されるまでループ
 	while (Novice::ProcessMessage() == 0) {
@@ -79,10 +81,10 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR /*lpCmdLine*/,
 		cameraMatrix = matrix.MakeAffineMatrix({ 1.0f,1.0f,1.0f }, { 0.0f,0.0f,0.0f }, cameraPosition);
 
 		viewMatrix = matrix.Inverse(cameraMatrix);
-		projectionMatrix = matrix.MakePerspectiveFovMatrix(0.45f, float(kWindowWidth) / float(kWindowHeight), 0.1f, 100.0f);
+		projectionMatrix = matrix.MakePerspectiveFovMatrix(0.45f, static_cast<float>(kWindowWidth) / static_cast<float>(kWindowHeight), 0.1f, 100.0f);
 		worldViewProjectionMatrix = matrix.Multiply(worldMatrix, matrix.Multiply(viewMatrix, projectionMatrix));
 
-		viewportMatrix = matrix.MakeViewportMatrix(0.0f, 0.0f, float(kWindowWidth), float(kWindowHeight), 0.0f, 1.0f);
+		viewportMatrix = matrix.MakeViewportMatrix(0.0f, 0.0f, static_cast<float>(kWindowWidth), static_cast<float>(kWindowHeight), 0.0f, 1.0f);
 
 		
 		for (UINT32 i = 0; i < 3; i++)
@@ -99,14 +101,16 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR /*lpCmdLine*/,
 		/// ↓描画処理ここから
 		///
 
-		Novice::DrawTriangle(int(screenVertices[0].x), int(screenVertices[0].y),
-			int(screenVertices[1].x), int(screenVertices[1].y),
-			int(screenVertices[2].x), int(screenVertices[2].y), 0xff0000ff, kFillModeSolid);
+		
 
-		Vector3 v1{ 1.2f,-3.9f,2.5f };
-		Vector3 v2{ 2.8f,0.4f,-1.3f };
-		Vector3 cross = matrix.Cross(v1, v2);
-		VectorScreenPrintf(0, 0, cross, "Cross");
+		cross = matrix.Cross(screenVertices[0], screenVertices[1]);
+		Vector3 backCulling = matrix.Cross(cameraPosition, cross);
+		if (backCulling.x <= 0.0f)
+		{
+			Novice::DrawTriangle(static_cast<int>(screenVertices[0].x), static_cast<int>(screenVertices[0].y),
+				static_cast<int>(screenVertices[1].x), static_cast<int>(screenVertices[1].y),
+				static_cast<int>(screenVertices[2].x), static_cast<int>(screenVertices[2].y), 0xff0000ff, kFillModeSolid);
+		}
 
 
 		///
