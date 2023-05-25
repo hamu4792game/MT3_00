@@ -17,17 +17,16 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR /*lpCmdLine*/,
 	char keys[256] = {0};
 	char preKeys[256] = {0};
 
-	MyMatrix4x4 matrix;
 	Vector3 rotate = { 0.0f,0.0f,0.0f };
 	Vector3 translate = { 0.0f,0.0f,0.0f };
 	Vector3 cameraPosition = { 0.0f,0.0f,-500.0f };
 
-	Matrix4x4 worldMatrix{};
-	Matrix4x4 cameraMatrix{};
-	Matrix4x4 viewMatrix{};
-	Matrix4x4 projectionMatrix{};
-	Matrix4x4 worldViewProjectionMatrix{};
-	Matrix4x4 viewportMatrix{};
+	MyMatrix4x4 worldMatrix{};
+	MyMatrix4x4 cameraMatrix{};
+	MyMatrix4x4 viewMatrix{};
+	MyMatrix4x4 projectionMatrix{};
+	MyMatrix4x4 worldViewProjectionMatrix{};
+	MyMatrix4x4 viewportMatrix{};
 
 	Vector3 screenVertices[3]{};
 	Vector3 kLocalVertices[3] = {
@@ -77,20 +76,19 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR /*lpCmdLine*/,
 		}
 
 		//	行列の計算
-		worldMatrix = matrix.MakeAffineMatrix({ 1.0f,1.0f,1.0f }, rotate, translate);
-		cameraMatrix = matrix.MakeAffineMatrix({ 1.0f,1.0f,1.0f }, { 0.0f,0.0f,0.0f }, cameraPosition);
+		worldMatrix = MakeAffineMatrix({ 1.0f,1.0f,1.0f }, rotate, translate);
+		cameraMatrix = MakeAffineMatrix({ 1.0f,1.0f,1.0f }, { 0.0f,0.0f,0.0f }, cameraPosition);
 
-		viewMatrix = matrix.Inverse(cameraMatrix);
-		projectionMatrix = matrix.MakePerspectiveFovMatrix(0.45f, static_cast<float>(kWindowWidth) / static_cast<float>(kWindowHeight), 0.1f, 100.0f);
-		worldViewProjectionMatrix = matrix.Multiply(worldMatrix, matrix.Multiply(viewMatrix, projectionMatrix));
-
-		viewportMatrix = matrix.MakeViewportMatrix(0.0f, 0.0f, static_cast<float>(kWindowWidth), static_cast<float>(kWindowHeight), 0.0f, 1.0f);
+		viewMatrix = Inverse(cameraMatrix);
+		projectionMatrix = MakePerspectiveFovMatrix(0.45f, static_cast<float>(kWindowWidth) / static_cast<float>(kWindowHeight), 0.1f, 100.0f);
+		worldViewProjectionMatrix = worldMatrix * (viewMatrix * projectionMatrix);
+		viewportMatrix = MakeViewportMatrix(0.0f, 0.0f, static_cast<float>(kWindowWidth), static_cast<float>(kWindowHeight), 0.0f, 1.0f);
 
 		
 		for (UINT32 i = 0; i < 3; i++)
 		{
-			Vector3 ndcVertex = matrix.Transform(kLocalVertices[i], worldViewProjectionMatrix);
-			screenVertices[i] = matrix.Transform(ndcVertex, viewportMatrix);
+			Vector3 ndcVertex = Transform(kLocalVertices[i], worldViewProjectionMatrix);
+			screenVertices[i] = Transform(ndcVertex, viewportMatrix);
 		}
 
 		///
@@ -103,8 +101,8 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR /*lpCmdLine*/,
 
 		
 
-		cross = matrix.Cross(screenVertices[0], screenVertices[1]);
-		Vector3 backCulling = matrix.Cross(cameraPosition, cross);
+		cross = Cross(screenVertices[0], screenVertices[1]);
+		Vector3 backCulling = Cross(cameraPosition, cross);
 		if (backCulling.x <= 0.0f)
 		{
 			Novice::DrawTriangle(static_cast<int>(screenVertices[0].x), static_cast<int>(screenVertices[0].y),
