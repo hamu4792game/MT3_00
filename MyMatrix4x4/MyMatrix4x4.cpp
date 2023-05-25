@@ -2,13 +2,9 @@
 #include <cassert>
 #include <cmath>
 
-MyMatrix4x4::MyMatrix4x4() : m({ 0.0f }) {
+MyMatrix4x4::MyMatrix4x4() : m({ 0.0f }) {}
 
-}
-
-MyMatrix4x4::~MyMatrix4x4() {
-
-}
+MyMatrix4x4::~MyMatrix4x4() {}
 
 //	加算
 MyMatrix4x4 MyMatrix4x4::operator+(const MyMatrix4x4& mat)

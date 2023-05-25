@@ -1,7 +1,8 @@
 #include <Novice.h>
 #include "MyMatrix4x4/MyMatrix4x4.h"
-
+#include "Func.h"
 #include <numbers>
+
 
 const char* kWindowTitle = "LE2A_17_マツイユウセイ";
 
@@ -19,7 +20,8 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR /*lpCmdLine*/,
 
 	Vector3 rotate = { 0.0f,0.0f,0.0f };
 	Vector3 translate = { 0.0f,0.0f,0.0f };
-	Vector3 cameraPosition = { 0.0f,0.0f,-500.0f };
+	Vector3 cameraTranslate = { 0.0f,1.9f,-6.49f };
+	Vector3 cameraRotate = { 0.26f,0.0f,0.0f };
 
 	MyMatrix4x4 worldMatrix{};
 	MyMatrix4x4 cameraMatrix{};
@@ -28,14 +30,6 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR /*lpCmdLine*/,
 	MyMatrix4x4 worldViewProjectionMatrix{};
 	MyMatrix4x4 viewportMatrix{};
 
-	Vector3 screenVertices[3]{};
-	Vector3 kLocalVertices[3] = {
-		{0.0f,50.0f,0.0f},
-		{-50.0f,-50.0f,0.0f},
-		{50.0f,-50.0f,0.0f}
-	};
-
-	Vector3 cross{};
 
 	// ウィンドウの×ボタンが押されるまでループ
 	while (Novice::ProcessMessage() == 0) {
@@ -50,46 +44,16 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR /*lpCmdLine*/,
 		/// ↓更新処理ここから
 		///
 
-		rotate.y += 2.0f * std::numbers::pi_v<float> / 90.0f;
-
-		if (rotate.y >= 2.0f * std::numbers::pi_v<float>)
-		{
-			rotate.y = 0.0f;
-		}
-
-		if (keys[DIK_W])
-		{
-			translate.z -= 5.0f;
-		}
-		if (keys[DIK_S])
-		{
-			translate.z += 5.0f;
-		}
-
-		if (keys[DIK_A])
-		{
-			translate.x -= 5.0f;
-		}
-		if (keys[DIK_D])
-		{
-			translate.x += 5.0f;
-		}
 
 		//	行列の計算
 		worldMatrix = MakeAffineMatrix({ 1.0f,1.0f,1.0f }, rotate, translate);
-		cameraMatrix = MakeAffineMatrix({ 1.0f,1.0f,1.0f }, { 0.0f,0.0f,0.0f }, cameraPosition);
+		cameraMatrix = MakeAffineMatrix({ 1.0f,1.0f,1.0f }, cameraRotate, cameraTranslate);
 
 		viewMatrix = Inverse(cameraMatrix);
 		projectionMatrix = MakePerspectiveFovMatrix(0.45f, static_cast<float>(kWindowWidth) / static_cast<float>(kWindowHeight), 0.1f, 100.0f);
 		worldViewProjectionMatrix = worldMatrix * (viewMatrix * projectionMatrix);
 		viewportMatrix = MakeViewportMatrix(0.0f, 0.0f, static_cast<float>(kWindowWidth), static_cast<float>(kWindowHeight), 0.0f, 1.0f);
 
-		
-		for (UINT32 i = 0; i < 3; i++)
-		{
-			Vector3 ndcVertex = Transform(kLocalVertices[i], worldViewProjectionMatrix);
-			screenVertices[i] = Transform(ndcVertex, viewportMatrix);
-		}
 
 		///
 		/// ↑更新処理ここまで
@@ -99,17 +63,7 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR /*lpCmdLine*/,
 		/// ↓描画処理ここから
 		///
 
-		
-
-		cross = Cross(screenVertices[0], screenVertices[1]);
-		Vector3 backCulling = Cross(cameraPosition, cross);
-		if (backCulling.x <= 0.0f)
-		{
-			Novice::DrawTriangle(static_cast<int>(screenVertices[0].x), static_cast<int>(screenVertices[0].y),
-				static_cast<int>(screenVertices[1].x), static_cast<int>(screenVertices[1].y),
-				static_cast<int>(screenVertices[2].x), static_cast<int>(screenVertices[2].y), 0xff0000ff, kFillModeSolid);
-		}
-
+		DrawGrid(worldViewProjectionMatrix, viewportMatrix);
 
 		///
 		/// ↑描画処理ここまで
