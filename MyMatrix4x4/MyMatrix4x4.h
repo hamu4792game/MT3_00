@@ -1,12 +1,14 @@
 ﻿#pragma once
 #include "Matrix4x4.h"
 #include "Vector3.h"
+#include <array>
 
 class MyMatrix4x4
 {
 public:
 	MyMatrix4x4();
 	~MyMatrix4x4();
+
 private:
 	Matrix4x4 result;
 	Vector3 resultVec;
