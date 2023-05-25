@@ -2,6 +2,7 @@
 #include "MyMatrix4x4/MyMatrix4x4.h"
 #include "Func.h"
 #include <numbers>
+#include <imgui.h>
 
 
 const char* kWindowTitle = "LE2A_17_マツイユウセイ";
@@ -18,18 +19,21 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR /*lpCmdLine*/,
 	char keys[256] = {0};
 	char preKeys[256] = {0};
 
-	Vector3 rotate = { 0.0f,0.0f,0.0f };
-	Vector3 translate = { 0.0f,0.0f,0.0f };
-	Vector3 cameraTranslate = { 0.0f,1.9f,-6.49f };
-	Vector3 cameraRotate = { 0.26f,0.0f,0.0f };
+	/*Vector3 rotate = { 0.0f,0.0f,0.0f };
+	Vector3 translate = { 0.0f,0.0f,0.0f };*/
+	Vector3 cameraTranslate = { 0.0f,0.1f,-1.0f };
+	Vector3 cameraRotate = { 0.0f,0.0f,0.0f };
 
-	MyMatrix4x4 worldMatrix{};
 	MyMatrix4x4 cameraMatrix{};
 	MyMatrix4x4 viewMatrix{};
 	MyMatrix4x4 projectionMatrix{};
-	MyMatrix4x4 worldViewProjectionMatrix{};
+	MyMatrix4x4 ViewProjectionMatrix{};
 	MyMatrix4x4 viewportMatrix{};
 
+	Sphere sphere{
+		{0.0f,0.0f,10.0f},
+		2.0f
+	};
 
 	// ウィンドウの×ボタンが押されるまでループ
 	while (Novice::ProcessMessage() == 0) {
@@ -44,14 +48,19 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR /*lpCmdLine*/,
 		/// ↓更新処理ここから
 		///
 
+		ImGui::Begin("Window");
+		ImGui::DragFloat3("CameraTranslate", &cameraTranslate.x, 0.01f);
+		ImGui::DragFloat3("CameraRotate", &cameraRotate.x, 0.01f);
+		ImGui::DragFloat3("SphereCenter", &sphere.center.x, 0.01f);
+		ImGui::DragFloat("SphereRadius", &sphere.radius, 0.01f);
+		ImGui::End();
 
 		//	行列の計算
-		worldMatrix = MakeAffineMatrix({ 1.0f,1.0f,1.0f }, rotate, translate);
 		cameraMatrix = MakeAffineMatrix({ 1.0f,1.0f,1.0f }, cameraRotate, cameraTranslate);
 
 		viewMatrix = Inverse(cameraMatrix);
 		projectionMatrix = MakePerspectiveFovMatrix(0.45f, static_cast<float>(kWindowWidth) / static_cast<float>(kWindowHeight), 0.1f, 100.0f);
-		worldViewProjectionMatrix = worldMatrix * (viewMatrix * projectionMatrix);
+		ViewProjectionMatrix = (viewMatrix * projectionMatrix);
 		viewportMatrix = MakeViewportMatrix(0.0f, 0.0f, static_cast<float>(kWindowWidth), static_cast<float>(kWindowHeight), 0.0f, 1.0f);
 
 
@@ -63,7 +72,9 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR /*lpCmdLine*/,
 		/// ↓描画処理ここから
 		///
 
-		DrawGrid(worldViewProjectionMatrix, viewportMatrix);
+		DrawGrid(ViewProjectionMatrix, viewportMatrix);
+
+		DrawSphere(sphere, ViewProjectionMatrix, viewportMatrix, 0xff);
 
 		///
 		/// ↑描画処理ここまで
