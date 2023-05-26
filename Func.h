@@ -6,6 +6,7 @@ void DrawGrid(const MyMatrix4x4& viewProjectionMatrix, const MyMatrix4x4& viewpo
 struct Sphere
 {
 	Vector3 center;
+	Vector3 rotate;
 	float radius;
 };
 

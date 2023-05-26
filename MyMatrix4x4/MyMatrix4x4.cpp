@@ -37,13 +37,11 @@ MyMatrix4x4 MyMatrix4x4::operator*(const MyMatrix4x4& mat)
 {
 	MyMatrix4x4 result;
 
-	for (int z = 0; z < result.m.size(); z++)
-	{
-		for (int y = 0; y < result.m.size(); y++)
+	for (int y = 0; y < m.size(); y++){
+		for (int x = 0; x < m.begin()->size(); x++)
 		{
-			for (int x = 0; x < result.m.size(); x++)
-			{
-				result.m[z][y] += this->m[z][x] * mat.m[x][y];
+			for (int i = 0; i < 4; i++) {
+				result.m[y][x] += m[y][i] * mat.m[i][x];
 			}
 		}
 	}
