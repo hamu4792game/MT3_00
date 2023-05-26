@@ -115,7 +115,7 @@ MyMatrix4x4 Inverse(const MyMatrix4x4& m) {
 		m.m[1][2] * m.m[2][3] * m.m[3][0] -
 		m.m[1][3] * m.m[2][0] * m.m[3][2] +
 		m.m[1][3] * m.m[2][2] * m.m[3][0] +
-		m.m[1][2] * m.m[1][1] * m.m[3][2] +
+		m.m[1][2] * m.m[2][0] * m.m[3][3] +
 		m.m[1][0] * m.m[2][3] * m.m[3][2]) / A;
 	result.m[1][1] = (m.m[0][0] * m.m[2][2] * m.m[3][3] +
 		m.m[0][2] * m.m[2][3] * m.m[3][0] +
@@ -255,7 +255,7 @@ MyMatrix4x4 MakeScaleMatrix(const Vector3& scale)
 //	座標変換
 Vector3 Transform(const Vector3& vector, const MyMatrix4x4& matrix)
 {
-	Vector3 resultVec;
+	Vector3 resultVec{0.0f,0.0f,0.0f};
 	resultVec.x = vector.x * matrix.m[0][0] + vector.y * matrix.m[1][0] + vector.z * matrix.m[2][0] + 1.0f * matrix.m[3][0];
 	resultVec.y = vector.x * matrix.m[0][1] + vector.y * matrix.m[1][1] + vector.z * matrix.m[2][1] + 1.0f * matrix.m[3][1];
 	resultVec.z = vector.x * matrix.m[0][2] + vector.y * matrix.m[1][2] + vector.z * matrix.m[2][2] + 1.0f * matrix.m[3][2];
@@ -345,7 +345,7 @@ MyMatrix4x4 MakeAffineMatrix(const Vector3& scale, const Vector3& rotate, const 
 		}
 	}
 	MyMatrix4x4 rotateMatrix;
-	rotateMatrix = MakeRotateXMatrix(rotate.x) * (MakeRotateYMatrix(rotate.y) * MakeRotateZMatrix(rotate.z));
+	rotateMatrix = MakeRotateXMatrix(rotate.x) * MakeRotateYMatrix(rotate.y) * MakeRotateZMatrix(rotate.z);
 	result = rotateMatrix;
 
 

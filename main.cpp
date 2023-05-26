@@ -28,7 +28,7 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR /*lpCmdLine*/,
 	MyMatrix4x4 cameraMatrix{};
 	MyMatrix4x4 viewMatrix{};
 	MyMatrix4x4 projectionMatrix{};
-	MyMatrix4x4 worldViewProjectionMatrix{};
+	MyMatrix4x4 viewProjectionMatrix{};
 	MyMatrix4x4 viewportMatrix{};
 
 	Sphere sphere{
@@ -59,12 +59,11 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR /*lpCmdLine*/,
 		ImGui::End();
 
 		//	行列の計算
-		worldMatrix = MakeAffineMatrix({ 1.0f,1.0f,1.0f }, { 0.0f,0.0f,0.0f }, translate);
 		cameraMatrix = MakeAffineMatrix({ 1.0f,1.0f,1.0f }, cameraRotate, cameraTranslate);
 
 		viewMatrix = Inverse(cameraMatrix);
 		projectionMatrix = MakePerspectiveFovMatrix(0.45f, static_cast<float>(kWindowWidth) / static_cast<float>(kWindowHeight), 0.1f, 100.0f);
-		worldViewProjectionMatrix = worldMatrix * (viewMatrix * projectionMatrix);
+		viewProjectionMatrix = viewMatrix * projectionMatrix;
 		viewportMatrix = MakeViewportMatrix(0.0f, 0.0f, static_cast<float>(kWindowWidth), static_cast<float>(kWindowHeight), 0.0f, 1.0f);
 
 
@@ -76,9 +75,9 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR /*lpCmdLine*/,
 		/// ↓描画処理ここから
 		///
 
-		DrawGrid(worldViewProjectionMatrix, viewportMatrix);
+		DrawGrid(viewProjectionMatrix, viewportMatrix);
 
-		DrawSphere(sphere, worldViewProjectionMatrix, viewportMatrix, 0xff);
+		DrawSphere(sphere, viewProjectionMatrix, viewportMatrix, 0xff);
 
 		///
 		/// ↑描画処理ここまで

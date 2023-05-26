@@ -12,7 +12,8 @@ void DrawGrid(const MyMatrix4x4& viewProjectionMatrix, const MyMatrix4x4& viewpo
 	//	1つ分の長さ
 	const float kGridEvery = (kGridHalfWidth * 2.0f) / float(kSubdivision);
 
-	MyMatrix4x4 worldViewProjectionMatrix = viewProjectionMatrix;
+	MyMatrix4x4 worldMatrix = MakeAffineMatrix({ 1.0f,1.0f,1.0f }, { 0.0f,0.0f,0.0f }, { 0.0f,0.0f,0.0f });
+	MyMatrix4x4 worldViewProjectionMatrix = worldMatrix * viewProjectionMatrix;
 
 	//	奥から手前へ
 	Vector3 translate{ 0.0f,0.0f,0.0f };
@@ -95,7 +96,8 @@ void DrawSphere(const Sphere& sphere, const MyMatrix4x4& viewProjectionMatrix, c
 	//	緯度分割1つ分の角度
 	const float kLatEvery = std::numbers::pi_v<float> / static_cast<float>(kSubdivision);
 
-	MyMatrix4x4 worldProjectionViewMatrix = viewProjectionMatrix;
+	MyMatrix4x4 worldMatrix = MakeAffineMatrix({ 1.0f,1.0f,1.0f }, sphere.rotate, sphere.center);
+	MyMatrix4x4 worldViewProjectionMatrix = worldMatrix * viewProjectionMatrix;
 
 	//	緯度の方向に分割
 	for (uint32_t latIndex = 0; latIndex < kSubdivision; latIndex++)
@@ -118,9 +120,9 @@ void DrawSphere(const Sphere& sphere, const MyMatrix4x4& viewProjectionMatrix, c
 			a.z += sphere.center.z;b.z += sphere.center.z;c.z += sphere.center.z;
 			
 			//	abcをScreen座標系まで変換
-			Vector3 aScreen = Transform(a, worldProjectionViewMatrix * viewportMatrix);
-			Vector3 bScreen = Transform(b, worldProjectionViewMatrix * viewportMatrix);
-			Vector3 cScreen = Transform(c, worldProjectionViewMatrix * viewportMatrix);
+			Vector3 aScreen = Transform(a, worldViewProjectionMatrix * viewportMatrix);
+			Vector3 bScreen = Transform(b, worldViewProjectionMatrix * viewportMatrix);
+			Vector3 cScreen = Transform(c, worldViewProjectionMatrix * viewportMatrix);
 			//	abで縦、acで横の線を引く
 			Novice::DrawLine(static_cast<int>(aScreen.x), static_cast<int>(aScreen.y),
 				static_cast<int>(bScreen.x), static_cast<int>(bScreen.y), color);
