@@ -86,7 +86,6 @@ void DrawGrid(const MyMatrix4x4& viewProjectionMatrix, const MyMatrix4x4& viewpo
 				static_cast<int>(endScreen.x), static_cast<int>(endScreen.y), 0xaaaaaaff);
 		}
 	}
-
 }
 
 void DrawSphere(const Sphere& sphere, const MyMatrix4x4& viewProjectionMatrix, const MyMatrix4x4& viewportMatrix, uint32_t color)

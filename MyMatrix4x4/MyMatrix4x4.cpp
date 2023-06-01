@@ -103,7 +103,7 @@ MyMatrix4x4 Inverse(const MyMatrix4x4& m) {
 		m.m[0][3] * m.m[1][1] * m.m[3][2] -
 		m.m[0][3] * m.m[1][2] * m.m[3][1] -
 		m.m[0][2] * m.m[1][1] * m.m[3][3] -
-		m.m[0][1] * m.m[1][3] * m.m[2][2]) / A;
+		m.m[0][1] * m.m[1][3] * m.m[3][2]) / A;
 	result.m[0][3] = (-m.m[0][1] * m.m[1][2] * m.m[2][3] -
 		m.m[0][2] * m.m[1][3] * m.m[2][1] -
 		m.m[0][3] * m.m[1][1] * m.m[2][2] +
@@ -119,7 +119,7 @@ MyMatrix4x4 Inverse(const MyMatrix4x4& m) {
 		m.m[1][0] * m.m[2][3] * m.m[3][2]) / A;
 	result.m[1][1] = (m.m[0][0] * m.m[2][2] * m.m[3][3] +
 		m.m[0][2] * m.m[2][3] * m.m[3][0] +
-		m.m[0][3] * m.m[2][0] * m.m[0][3] -
+		m.m[0][3] * m.m[2][0] * m.m[3][2] -
 		m.m[0][3] * m.m[2][2] * m.m[3][0] -
 		m.m[0][2] * m.m[2][0] * m.m[3][3] -
 		m.m[0][0] * m.m[2][3] * m.m[3][2]) / A;
@@ -151,7 +151,7 @@ MyMatrix4x4 Inverse(const MyMatrix4x4& m) {
 	result.m[2][2] = (m.m[0][0] * m.m[1][1] * m.m[3][3] +
 		m.m[0][1] * m.m[1][3] * m.m[3][0] +
 		m.m[0][3] * m.m[1][0] * m.m[3][1] -
-		m.m[0][3] * m.m[1][1] * m.m[2][0] -
+		m.m[0][3] * m.m[1][1] * m.m[3][0] -
 		m.m[0][1] * m.m[1][0] * m.m[3][3] -
 		m.m[0][0] * m.m[1][3] * m.m[3][1]) / A;
 	result.m[2][3] = (-m.m[0][0] * m.m[1][1] * m.m[2][3] -
@@ -348,8 +348,7 @@ MyMatrix4x4 MakeAffineMatrix(const Vector3& scale, const Vector3& rotate, const 
 	rotateMatrix = MakeRotateXMatrix(rotate.x) * MakeRotateYMatrix(rotate.y) * MakeRotateZMatrix(rotate.z);
 	result = rotateMatrix;
 
-
-	for (int i = 0; i < 3; i++)
+	for (int i = 0; i < 2; i++)
 	{
 		result.m[0][i] = scale.x * rotateMatrix.m[0][i];
 		result.m[1][i] = scale.y * rotateMatrix.m[1][i];
