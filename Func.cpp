@@ -2,6 +2,7 @@
 #include <Novice.h>
 #include <numbers>
 #include <cmath>
+#include <algorithm>
 
 void DrawGrid(const MyMatrix4x4& viewProjectionMatrix, const MyMatrix4x4& viewportMatrix)
 {
@@ -90,7 +91,7 @@ void DrawGrid(const MyMatrix4x4& viewProjectionMatrix, const MyMatrix4x4& viewpo
 
 void DrawSphere(const Sphere& sphere, const MyMatrix4x4& viewProjectionMatrix, const MyMatrix4x4& viewportMatrix, uint32_t color)
 {
-	const uint32_t kSubdivision = 32;
+	const uint32_t kSubdivision = 16;
 	//	経度分割1つ分の角度
 	const float kLonEvery = std::numbers::pi_v<float> * 2.0f / static_cast<float>(kSubdivision);
 	//	緯度分割1つ分の角度
@@ -131,4 +132,24 @@ void DrawSphere(const Sphere& sphere, const MyMatrix4x4& viewProjectionMatrix, c
 		}
 	}
 
+}
+
+Vector3 Project(const Vector3& v1, const Vector3& v2)
+{
+	Vector3 result{};
+	float dot = (v1.x * v2.x) + (v1.y * v2.y) + (v1.z * v2.z);
+	float nor = sqrtf((v2.x * v2.x) + (v2.y * v2.y) + (v2.z * v2.z));
+	float t = dot / (nor * nor);
+	t = std::clamp(t, 0.0f, 1.0f);
+	result.x = t * v2.x;
+	result.y = t * v2.y;
+	result.z = t * v2.z;
+	
+	return result;
+}
+
+Vector3 ClosestPoint(const Vector3& point, const Segment& segment) {
+	Vector3 proj = Project(point - segment.origin, segment.diff);
+	Vector3 result = segment.origin + proj;
+	return result;
 }
