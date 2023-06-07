@@ -81,10 +81,10 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR /*lpCmdLine*/,
 
 		DrawGrid(viewProjectionMatrix, viewportMatrix);
 
+		Novice::DrawLine(static_cast<int>(start.x), static_cast<int>(start.y), static_cast<int>(end.x), static_cast<int>(end.y), 0xffffffff);
+
 		DrawSphere(pointSphere, viewProjectionMatrix, viewportMatrix, 0xff0000ff);
 		DrawSphere(closestPointSphere, viewProjectionMatrix, viewportMatrix, 0xff);
-
-		Novice::DrawLine(static_cast<int>(start.x), static_cast<int>(start.y), static_cast<int>(end.x), static_cast<int>(end.y), 0xffffffff);
 
 		///
 		/// ↑描画処理ここまで

@@ -115,10 +115,6 @@ void DrawSphere(const Sphere& sphere, const MyMatrix4x4& viewProjectionMatrix, c
 			b = { cosf(lat + kLatEvery) * cosf(lon) * sphere.radius ,sinf(lat + kLatEvery) * sphere.radius ,cosf(lat + kLatEvery) * sinf(lon) * sphere.radius };
 			c = { cosf(lat) * cosf(lon + kLonEvery) * sphere.radius ,sinf(lat) * sphere.radius ,cosf(lat) * sinf(lon + kLonEvery) * sphere.radius };
 
-			a.x += sphere.center.x;b.x += sphere.center.x;c.x += sphere.center.x;
-			a.y += sphere.center.y;b.y += sphere.center.y;c.y += sphere.center.y;
-			a.z += sphere.center.z;b.z += sphere.center.z;c.z += sphere.center.z;
-			
 			//	abcをScreen座標系まで変換
 			Vector3 aScreen = Transform(a, worldViewProjectionMatrix * viewportMatrix);
 			Vector3 bScreen = Transform(b, worldViewProjectionMatrix * viewportMatrix);

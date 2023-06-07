@@ -192,7 +192,7 @@ MyMatrix4x4 Inverse(const MyMatrix4x4& m) {
 }
 //	転置行列
 MyMatrix4x4 Transpose(const MyMatrix4x4& m) {
-	MyMatrix4x4 result;
+	MyMatrix4x4 result{};
 	for (int y = 0; y < result.m.size(); y++) {
 		for (int x = 0; x < result.m.size(); x++) {
 			result.m[y][x] = m.m[x][y];
@@ -203,7 +203,7 @@ MyMatrix4x4 Transpose(const MyMatrix4x4& m) {
 }
 //	単位行列の作成
 MyMatrix4x4 MakeIdentity4x4() {
-	MyMatrix4x4 result;
+	MyMatrix4x4 result{};
 	for (int y = 0; y < result.m.size(); y++) {
 		result.m[y][y] = 1.0f;
 	}
@@ -213,7 +213,7 @@ MyMatrix4x4 MakeIdentity4x4() {
 //	平行移動行列
 MyMatrix4x4 MakeTranslateMatrix(const Vector3& translate)
 {
-	MyMatrix4x4 result;
+	MyMatrix4x4 result{};
 	for (int y = 0; y < result.m.size(); y++)
 	{
 		for (int x = 0; x < result.m.size(); x++)
@@ -237,14 +237,8 @@ MyMatrix4x4 MakeTranslateMatrix(const Vector3& translate)
 //	拡大縮小行列
 MyMatrix4x4 MakeScaleMatrix(const Vector3& scale)
 {
-	MyMatrix4x4 result;
-	for (int y = 0; y < result.m.size(); y++)
-	{
-		for (int x = 0; x < result.m.size(); x++)
-		{
-			result.m[y][x] = 0.0f;
-		}
-	}
+	MyMatrix4x4 result{};
+	
 	result.m[0][0] = scale.x;
 	result.m[1][1] = scale.y;
 	result.m[2][2] = scale.z;
@@ -270,14 +264,7 @@ Vector3 Transform(const Vector3& vector, const MyMatrix4x4& matrix)
 
 MyMatrix4x4 MakeRotateXMatrix(float radian)
 {
-	MyMatrix4x4 result;
-	for (int y = 0; y < result.m.size(); y++)
-	{
-		for (int x = 0; x < result.m.size(); x++)
-		{
-			result.m[y][x] = 0.0f;
-		}
-	}
+	MyMatrix4x4 result{};
 	result.m[0][0] = 1.0f;
 	result.m[3][3] = 1.0f;
 
@@ -292,14 +279,7 @@ MyMatrix4x4 MakeRotateXMatrix(float radian)
 
 MyMatrix4x4 MakeRotateYMatrix(float radian)
 {
-	MyMatrix4x4 result;
-	for (int y = 0; y < result.m.size(); y++)
-	{
-		for (int x = 0; x < result.m.size(); x++)
-		{
-			result.m[y][x] = 0.0f;
-		}
-	}
+	MyMatrix4x4 result{};
 	result.m[1][1] = 1.0f;
 	result.m[3][3] = 1.0f;
 
@@ -314,14 +294,7 @@ MyMatrix4x4 MakeRotateYMatrix(float radian)
 
 MyMatrix4x4 MakeRotateZMatrix(float radian)
 {
-	MyMatrix4x4 result;
-	for (int y = 0; y < result.m.size(); y++)
-	{
-		for (int x = 0; x < result.m.size(); x++)
-		{
-			result.m[y][x] = 0.0f;
-		}
-	}
+	MyMatrix4x4 result{};
 	result.m[2][2] = 1.0f;
 	result.m[3][3] = 1.0f;
 
@@ -336,19 +309,13 @@ MyMatrix4x4 MakeRotateZMatrix(float radian)
 
 MyMatrix4x4 MakeAffineMatrix(const Vector3& scale, const Vector3& rotate, const Vector3& translate)
 {
-	MyMatrix4x4 result;
-	for (int y = 0; y < result.m.size(); y++)
-	{
-		for (int x = 0; x < result.m.size(); x++)
-		{
-			result.m[y][x] = 0.0f;
-		}
-	}
+	MyMatrix4x4 result{};
+
 	MyMatrix4x4 rotateMatrix;
 	rotateMatrix = MakeRotateXMatrix(rotate.x) * MakeRotateYMatrix(rotate.y) * MakeRotateZMatrix(rotate.z);
 	result = rotateMatrix;
 
-	for (int i = 0; i < 2; i++)
+	for (int i = 0; i < 3; i++)
 	{
 		result.m[0][i] = scale.x * rotateMatrix.m[0][i];
 		result.m[1][i] = scale.y * rotateMatrix.m[1][i];
