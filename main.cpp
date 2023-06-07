@@ -53,9 +53,18 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR /*lpCmdLine*/,
 		/// ↓更新処理ここから
 		///
 
+		//	計算処理
+		project = Project(point - segment.origin, segment.diff);
+		closestPoint = ClosestPoint(point, segment);
+
+		pointSphere.center = point;
+		closestPointSphere.center = closestPoint;
+
+		//	ImGui
 		ImGui::Begin("Window");
 		ImGui::DragFloat3("CameraTranslate", &cameraTranslate.x, 0.01f);
 		ImGui::DragFloat3("CameraRotate", &cameraRotate.x, 0.01f);
+		ImGui::DragFloat3("Point", &point.x, 0.01f);
 		ImGui::InputFloat3("Project", &project.x, "%.3f", ImGuiInputTextFlags_ReadOnly);
 		ImGui::End();
 
