@@ -1,5 +1,6 @@
 ﻿#pragma once
 #include "MyMatrix4x4/MyMatrix4x4.h"
+#include "Vector3.h"
 
 void DrawGrid(const MyMatrix4x4& viewProjectionMatrix, const MyMatrix4x4& viewportMatrix);
 
@@ -38,3 +39,14 @@ Vector3 ClosestPoint(const Vector3& point, const Segment& segment);
 float Length(const Vector3& vec);
 
 bool IsCollision(const Sphere& s1, const Sphere& s2);
+
+//	平面
+struct Plane {
+	Vector3 normal;	//	法線
+	float distance;	//	距離
+};
+//	おーばーろーど
+bool IsCollision(const Sphere& sphere, const Plane& plane);
+
+Vector3 Perpendicular(const Vector3& vector);
+void DrawPlane(const Plane& plane, const MyMatrix4x4& viewProjectionMatrix, const MyMatrix4x4& viewportMatrix, uint32_t color);

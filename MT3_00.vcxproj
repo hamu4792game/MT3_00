@@ -109,6 +109,7 @@
     <ClCompile Include="Func.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="MyMatrix4x4\MyMatrix4x4.cpp" />
+    <ClCompile Include="Vector3.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="C:\KamataEngine\DirectXGame\math\Matrix4x4.h" />

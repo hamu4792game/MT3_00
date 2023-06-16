@@ -163,3 +163,49 @@ bool IsCollision(const Sphere& s1, const Sphere& s2)
 	}
 	return false;
 }
+
+bool IsCollision(const Sphere& sphere, const Plane& plane)
+{
+	Vector3 n = Normalize(plane.normal - sphere.center);
+	float num = (Dot(n, sphere.center) - plane.distance);
+
+	if (fabsf(num) <= sphere.radius)
+	{
+		return true;
+	}
+	return false;
+}
+
+Vector3 Perpendicular(const Vector3& vector) 
+{
+	if (vector.x != 0.0f || vector.y != 0.0f)
+	{
+		return { -vector.y,vector.x,0.0f };
+	}
+	return { 0.0f,-vector.z,vector.y };
+}
+
+void DrawPlane(const Plane& plane, const MyMatrix4x4& viewProjectionMatrix, const MyMatrix4x4& viewportMatrix, uint32_t color) 
+{
+	Vector3 center{};
+	//center.x = plane.distance * plane.normal.x; center.y = plane.distance * plane.normal.y;	center.z = plane.distance * plane.normal.z;
+	center = plane.normal * plane.distance;
+	Vector3 perpendiculars[4]{};
+	perpendiculars[0] = Normalize(Perpendicular(plane.normal));
+	perpendiculars[1] = { -perpendiculars[0].x,-perpendiculars[0].y,-perpendiculars[0].z };
+	perpendiculars[2] = Cross(plane.normal, perpendiculars[0]);
+	perpendiculars[3] = { -perpendiculars[2].x,-perpendiculars[2].y,-perpendiculars[2].z };
+
+	Vector3 points[4]{};
+	for (int32_t i = 0; i < 4; i++)
+	{
+		Vector3 extend = perpendiculars[i] * 2.0f;
+		Vector3 point = center + extend;
+		points[i] = Transform(Transform(point, viewProjectionMatrix), viewportMatrix);
+	}
+	Novice::DrawLine(static_cast<int>(points[0].x), static_cast<int>(points[0].y), static_cast<int>(points[3].x), static_cast<int>(points[3].y), color);
+	Novice::DrawLine(static_cast<int>(points[1].x), static_cast<int>(points[1].y), static_cast<int>(points[3].x), static_cast<int>(points[3].y), color);
+	Novice::DrawLine(static_cast<int>(points[1].x), static_cast<int>(points[1].y), static_cast<int>(points[2].x), static_cast<int>(points[2].y), color);
+	Novice::DrawLine(static_cast<int>(points[2].x), static_cast<int>(points[2].y), static_cast<int>(points[0].x), static_cast<int>(points[0].y), color);
+
+}

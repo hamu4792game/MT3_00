@@ -31,10 +31,11 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR /*lpCmdLine*/,
 	MyMatrix4x4 viewportMatrix{};
 
 	Vector3 center1{0.0f};
-	Vector3 center2{ 0.8f,0.8f,1.0f };
 	Sphere sphere1{ center1,{0.0f,0.0f,0.0f},0.8f };
-	Sphere sphere2{ center2,{0.0f,0.0f,0.0f},0.5f };
 	UINT32 color = 0xffffffff;
+
+	Plane plane{ 0.0f,1.0f,0.0f };
+	UINT32 plameColor = 0xffffffff;
 
 	// ウィンドウの×ボタンが押されるまでループ
 	while (Novice::ProcessMessage() == 0) {
@@ -51,7 +52,7 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR /*lpCmdLine*/,
 
 		//	計算処理
 		
-		if (IsCollision(sphere1,sphere2))
+		if (IsCollision(sphere1, plane))
 		{
 			color = 0xff0000ff;
 		}
@@ -66,8 +67,9 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR /*lpCmdLine*/,
 		ImGui::DragFloat3("CameraRotate", &cameraRotate.x, 0.01f);
 		ImGui::DragFloat3("SphereCenter1", &sphere1.center.x, 0.01f);
 		ImGui::DragFloat("SphereRadius1", &sphere1.radius, 0.01f);
-		ImGui::DragFloat3("SphereCenter2", &sphere2.center.x, 0.01f);
-		ImGui::DragFloat("SphereRadius2", &sphere2.radius, 0.01f);
+		ImGui::DragFloat3("Plane.Normal", &plane.normal.x, 0.01f);
+		plane.normal = Normalize(plane.normal);
+		ImGui::DragFloat("PlaneDistance", &plane.distance, 0.01f);
 		ImGui::End();
 
 		//	行列の計算
@@ -91,7 +93,8 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR /*lpCmdLine*/,
 		DrawGrid(viewProjectionMatrix, viewportMatrix);
 
 		DrawSphere(sphere1, viewProjectionMatrix, viewportMatrix, color);
-		DrawSphere(sphere2, viewProjectionMatrix, viewportMatrix, color);
+
+		DrawPlane(plane, viewProjectionMatrix, viewportMatrix, plameColor);
 
 		///
 		/// ↑描画処理ここまで
