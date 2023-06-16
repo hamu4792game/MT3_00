@@ -14,11 +14,11 @@ public:
 private:
 public:
 	//	加算
-	MyMatrix4x4 operator+(const MyMatrix4x4& mat);
+	MyMatrix4x4 operator+(const MyMatrix4x4& mat) const;
 	//	減算
-	MyMatrix4x4 operator-(const MyMatrix4x4& mat);
+	MyMatrix4x4 operator-(const MyMatrix4x4& mat) const;
 	//	行列の積
-	MyMatrix4x4 operator*(const MyMatrix4x4& mat);
+	MyMatrix4x4 operator*(const MyMatrix4x4& mat) const;
 	//	行列の代入
 	MyMatrix4x4& operator=(const MyMatrix4x4& mat);
 };

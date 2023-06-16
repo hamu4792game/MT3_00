@@ -7,7 +7,7 @@ MyMatrix4x4::MyMatrix4x4() : m({ 0.0f }) {}
 MyMatrix4x4::~MyMatrix4x4() {}
 
 //	加算
-MyMatrix4x4 MyMatrix4x4::operator+(const MyMatrix4x4& mat)
+MyMatrix4x4 MyMatrix4x4::operator+(const MyMatrix4x4& mat) const
 {
 	MyMatrix4x4 result;
 	for (int y = 0; y < result.m.size(); y++)
@@ -20,7 +20,7 @@ MyMatrix4x4 MyMatrix4x4::operator+(const MyMatrix4x4& mat)
 	return result;
 }
 //	減算
-MyMatrix4x4 MyMatrix4x4::operator-(const MyMatrix4x4& mat)
+MyMatrix4x4 MyMatrix4x4::operator-(const MyMatrix4x4& mat) const
 {
 	MyMatrix4x4 result;
 	for (int y = 0; y < result.m.size(); y++)
@@ -33,7 +33,7 @@ MyMatrix4x4 MyMatrix4x4::operator-(const MyMatrix4x4& mat)
 	return result;
 }
 //	行列の積
-MyMatrix4x4 MyMatrix4x4::operator*(const MyMatrix4x4& mat)
+MyMatrix4x4 MyMatrix4x4::operator*(const MyMatrix4x4& mat) const
 {
 	MyMatrix4x4 result;
 
@@ -48,7 +48,7 @@ MyMatrix4x4 MyMatrix4x4::operator*(const MyMatrix4x4& mat)
 
 	return result;
 }
-
+//	行列の代入
 MyMatrix4x4& MyMatrix4x4::operator=(const MyMatrix4x4& mat)
 {
 	m = mat.m;
