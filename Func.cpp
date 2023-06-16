@@ -187,15 +187,20 @@ Vector3 Perpendicular(const Vector3& vector)
 
 void DrawPlane(const Plane& plane, const MyMatrix4x4& viewProjectionMatrix, const MyMatrix4x4& viewportMatrix, uint32_t color) 
 {
+	//	中心点を決める
 	Vector3 center{};
-	//center.x = plane.distance * plane.normal.x; center.y = plane.distance * plane.normal.y;	center.z = plane.distance * plane.normal.z;
 	center = plane.normal * plane.distance;
 	Vector3 perpendiculars[4]{};
+	//	法線と垂直なベクトルを一つ求める
 	perpendiculars[0] = Normalize(Perpendicular(plane.normal));
+	//	[0]の逆ベクトルを求める
 	perpendiculars[1] = { -perpendiculars[0].x,-perpendiculars[0].y,-perpendiculars[0].z };
+	//	[0]と法線とのクロス積を求める
 	perpendiculars[2] = Cross(plane.normal, perpendiculars[0]);
+	//	[2]の逆ベクトルを求める
 	perpendiculars[3] = { -perpendiculars[2].x,-perpendiculars[2].y,-perpendiculars[2].z };
 
+	//	中心点にそれぞれ定数倍して足すと4頂点が出来上がる
 	Vector3 points[4]{};
 	for (int32_t i = 0; i < 4; i++)
 	{
@@ -203,6 +208,7 @@ void DrawPlane(const Plane& plane, const MyMatrix4x4& viewProjectionMatrix, cons
 		Vector3 point = center + extend;
 		points[i] = Transform(Transform(point, viewProjectionMatrix), viewportMatrix);
 	}
+	//	描画
 	Novice::DrawLine(static_cast<int>(points[0].x), static_cast<int>(points[0].y), static_cast<int>(points[3].x), static_cast<int>(points[3].y), color);
 	Novice::DrawLine(static_cast<int>(points[1].x), static_cast<int>(points[1].y), static_cast<int>(points[3].x), static_cast<int>(points[3].y), color);
 	Novice::DrawLine(static_cast<int>(points[1].x), static_cast<int>(points[1].y), static_cast<int>(points[2].x), static_cast<int>(points[2].y), color);
