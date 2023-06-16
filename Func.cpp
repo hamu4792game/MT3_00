@@ -215,3 +215,24 @@ void DrawPlane(const Plane& plane, const MyMatrix4x4& viewProjectionMatrix, cons
 	Novice::DrawLine(static_cast<int>(points[2].x), static_cast<int>(points[2].y), static_cast<int>(points[0].x), static_cast<int>(points[0].y), color);
 
 }
+
+bool IsCollision(const Segment& line, const Plane& plane)
+{
+	//	法線と線の内積を求める
+	float dot = Dot(plane.normal, line.diff);
+	//	平行時、早期リターン
+	if (dot == 0.0f)
+	{
+		return false;
+	}
+	//	媒介変数を求める
+	float t = (plane.distance - Dot(line.origin, plane.normal)) / dot;
+	/*Vector3 tb = line.diff * t;
+	Vector3 a = line.origin + tb;*/
+	Novice::ScreenPrintf(10, 10, "%f", t);
+	if (0.0f <= t && t <= 1.0f)
+	{
+		return true;
+	}
+	return false;
+}
