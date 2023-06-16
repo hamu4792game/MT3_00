@@ -47,7 +47,7 @@
     <ClCompile Include="MyMatrix4x4\MyMatrix4x4.cpp">
       <Filter>KamataEngine</Filter>
     </ClCompile>
-    <ClCompile Include="Vector3.cpp">
+    <ClCompile Include="..\..\..\..\..\KamataEngine\DirectXGame\math\Vector3.cpp">
       <Filter>math</Filter>
     </ClCompile>
   </ItemGroup>
