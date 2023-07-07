@@ -236,3 +236,56 @@ bool IsCollision(const Segment& line, const Plane& plane)
 	}
 	return false;
 }
+
+bool IsCollision(const Triangle& triangle, const Segment& segment)
+{
+	//	法線作る
+	Vector3 normal = Normalize(Cross(triangle.vertices[1] - triangle.vertices[0], triangle.vertices[2] - triangle.vertices[1]));
+	float distance = Dot(normal, triangle.vertices[0]);
+	float t = 0;
+	//	媒介変数を求める
+	if (Dot(normal, segment.diff) != 0.0f)
+	{
+		t = (distance - Dot(segment.origin, normal)) / Dot(normal, segment.diff);
+	}
+	else
+	{
+		return false;
+	}
+
+	//	各辺を結んだベクトルと、頂点と衝突点pを結んだベクトルのクロス積を取る
+	Vector3 p = segment.origin + (segment.diff * t);
+	Vector3 cross01 = Cross((triangle.vertices[1] - triangle.vertices[0]), (p - triangle.vertices[1]));
+	Vector3 cross12 = Cross((triangle.vertices[2] - triangle.vertices[1]), (p - triangle.vertices[2]));
+	Vector3 cross20 = Cross((triangle.vertices[0] - triangle.vertices[2]), (p - triangle.vertices[0]));
+
+	float dot01 = Dot(cross01, normal);
+	float dot12 = Dot(cross12, normal);
+	float dot20 = Dot(cross20, normal);
+
+	if (0.0f <= t && t <= 1.0f)
+	{
+		//	すべての小三角形のクロス積と法線が同じ方向を向いていたら衝突
+		if (dot01 >= 0.0f && dot12 >= 0.0f && dot20 >= 0.0f)
+		{
+			return true;
+		}
+	}
+		
+	return false;
+}
+
+void DrawTriangle(const Triangle& triangle, const MyMatrix4x4& viewProjectionMatrix, const MyMatrix4x4& viewportMatrix, uint32_t color)
+{
+	Vector3 ver[3]{};
+	for (int32_t i = 0; i < 3; i++)
+	{
+		ver[i] = Transform(Transform(triangle.vertices[i], viewProjectionMatrix), viewportMatrix);
+	}
+
+	//	描画
+	Novice::DrawLine(static_cast<int>(ver[0].x), static_cast<int>(ver[0].y), static_cast<int>(ver[1].x), static_cast<int>(ver[1].y), color);
+	Novice::DrawLine(static_cast<int>(ver[1].x), static_cast<int>(ver[1].y), static_cast<int>(ver[2].x), static_cast<int>(ver[2].y), color);
+	Novice::DrawLine(static_cast<int>(ver[2].x), static_cast<int>(ver[2].y), static_cast<int>(ver[0].x), static_cast<int>(ver[0].y), color);
+}
+

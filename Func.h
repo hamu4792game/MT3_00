@@ -45,6 +45,7 @@ struct Plane {
 	Vector3 normal;	//	法線
 	float distance;	//	距離
 };
+
 //	おーばーろーど
 bool IsCollision(const Sphere& sphere, const Plane& plane);
 
@@ -52,3 +53,12 @@ Vector3 Perpendicular(const Vector3& vector);
 void DrawPlane(const Plane& plane, const MyMatrix4x4& viewProjectionMatrix, const MyMatrix4x4& viewportMatrix, uint32_t color);
 
 bool IsCollision(const Segment& line, const Plane& plane);
+
+//	三角形
+struct Triangle {
+	Vector3 vertices[3]; // 頂点
+};
+
+bool IsCollision(const Triangle& triangle, const Segment& segment);
+
+void DrawTriangle(const Triangle& triangle, const MyMatrix4x4& viewProjectionMatrix, const MyMatrix4x4& viewportMatrix, uint32_t color);
