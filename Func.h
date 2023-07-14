@@ -62,3 +62,14 @@ struct Triangle {
 bool IsCollision(const Triangle& triangle, const Segment& segment);
 
 void DrawTriangle(const Triangle& triangle, const MyMatrix4x4& viewProjectionMatrix, const MyMatrix4x4& viewportMatrix, uint32_t color);
+
+//	AABB
+struct AABB
+{
+	Vector3 min;	// 最小点
+	Vector3 max;	// 最大点
+};
+//	AABB同士の衝突判定
+bool IsCollision(const AABB& aabb1, const AABB& aabb2);
+//	AABBの描画
+void DrawAABB(const AABB& aabb, const MyMatrix4x4& viewProjectionMatrix, const MyMatrix4x4& viewportMatrix, uint32_t color);

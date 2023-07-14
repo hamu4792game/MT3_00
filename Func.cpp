@@ -289,3 +289,77 @@ void DrawTriangle(const Triangle& triangle, const MyMatrix4x4& viewProjectionMat
 	Novice::DrawLine(static_cast<int>(ver[2].x), static_cast<int>(ver[2].y), static_cast<int>(ver[0].x), static_cast<int>(ver[0].y), color);
 }
 
+bool IsCollision(const AABB& aabb1, const AABB& aabb2)
+{
+	AABB a{};
+	AABB b{};
+	a.min.x = (std::min)(aabb1.min.x, aabb1.max.x);	a.max.x = (std::max)(aabb1.min.x, aabb1.max.x);
+	a.min.y = (std::min)(aabb1.min.y, aabb1.max.y);	a.max.y = (std::max)(aabb1.min.y, aabb1.max.y);
+	a.min.z = (std::min)(aabb1.min.z, aabb1.max.z);	a.max.z = (std::max)(aabb1.min.z, aabb1.max.z);
+	b.min.x = (std::min)(aabb2.min.x, aabb2.max.x);	b.max.x = (std::max)(aabb2.min.x, aabb2.max.x);
+	b.min.y = (std::min)(aabb2.min.y, aabb2.max.y);	b.max.y = (std::max)(aabb2.min.y, aabb2.max.y);
+	b.min.z = (std::min)(aabb2.min.z, aabb2.max.z);	b.max.z = (std::max)(aabb2.min.z, aabb2.max.z);
+
+	if ((a.min.x <= b.max.x && a.max.x >= b.min.x) &&
+		(a.min.y <= b.max.y && a.max.y >= b.min.y) &&
+		(a.min.z <= b.max.z && a.max.z >= b.min.z))
+	{
+		return true;
+	}
+	return false;
+}
+
+void DrawAABB(const AABB& aabb, const MyMatrix4x4& viewProjectionMatrix, const MyMatrix4x4& viewportMatrix, uint32_t color)
+{
+	Vector3 ver[8]{};
+	//	左下手前
+	ver[0] = { aabb.min.x,aabb.min.y,aabb.min.z };
+	//	右下手前
+	ver[1] = { aabb.max.x,aabb.min.y,aabb.min.z };
+	//	左上手前
+	ver[2] = { aabb.min.x,aabb.max.y,aabb.min.z };
+	//	右上手前
+	ver[3] = { aabb.max.x,aabb.max.y,aabb.min.z };
+	//	左下奥
+	ver[4] = { aabb.min.x,aabb.min.y,aabb.max.z };
+	//	右下奥
+	ver[5] = { aabb.max.x,aabb.min.y,aabb.max.z };
+	//	左上奥
+	ver[6] = { aabb.min.x,aabb.max.y,aabb.max.z };
+	//	右上奥
+	ver[7] = { aabb.max.x,aabb.max.y,aabb.max.z };
+
+	//	座標変換
+	for (int32_t i = 0; i < 8; i++)
+	{
+		ver[i] = Transform(Transform(ver[i], viewProjectionMatrix), viewportMatrix);
+	}
+
+	//	描画
+	//	下手前
+	Novice::DrawLine(static_cast<int>(ver[0].x), static_cast<int>(ver[0].y), static_cast<int>(ver[1].x), static_cast<int>(ver[1].y), color);
+	//	上手前
+	Novice::DrawLine(static_cast<int>(ver[2].x), static_cast<int>(ver[2].y), static_cast<int>(ver[3].x), static_cast<int>(ver[3].y), color);
+	//	下奥
+	Novice::DrawLine(static_cast<int>(ver[4].x), static_cast<int>(ver[4].y), static_cast<int>(ver[5].x), static_cast<int>(ver[5].y), color);
+	//	上奥
+	Novice::DrawLine(static_cast<int>(ver[6].x), static_cast<int>(ver[6].y), static_cast<int>(ver[7].x), static_cast<int>(ver[7].y), color);
+	//	左手前
+	Novice::DrawLine(static_cast<int>(ver[0].x), static_cast<int>(ver[0].y), static_cast<int>(ver[2].x), static_cast<int>(ver[2].y), color);
+	//	左奥
+	Novice::DrawLine(static_cast<int>(ver[4].x), static_cast<int>(ver[4].y), static_cast<int>(ver[6].x), static_cast<int>(ver[6].y), color);
+	//	右手前
+	Novice::DrawLine(static_cast<int>(ver[1].x), static_cast<int>(ver[1].y), static_cast<int>(ver[3].x), static_cast<int>(ver[3].y), color);
+	//	右奥
+	Novice::DrawLine(static_cast<int>(ver[5].x), static_cast<int>(ver[5].y), static_cast<int>(ver[7].x), static_cast<int>(ver[7].y), color);
+	//	左下
+	Novice::DrawLine(static_cast<int>(ver[0].x), static_cast<int>(ver[0].y), static_cast<int>(ver[4].x), static_cast<int>(ver[4].y), color);
+	//	左上
+	Novice::DrawLine(static_cast<int>(ver[2].x), static_cast<int>(ver[2].y), static_cast<int>(ver[6].x), static_cast<int>(ver[6].y), color);
+	//	右下
+	Novice::DrawLine(static_cast<int>(ver[1].x), static_cast<int>(ver[1].y), static_cast<int>(ver[5].x), static_cast<int>(ver[5].y), color);
+	//	右上
+	Novice::DrawLine(static_cast<int>(ver[3].x), static_cast<int>(ver[3].y), static_cast<int>(ver[7].x), static_cast<int>(ver[7].y), color);
+
+}
+

@@ -31,11 +31,15 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR /*lpCmdLine*/,
 	MyMatrix4x4 viewportMatrix{};
 
 	UINT32 color = 0xffffffff;
-	Triangle tri{ {{-1.0f,0.0f,0.0f},{0.0f,1.0f,0.0f},{1.0f,0.0f,0.0f}} };
-	
-	Segment line{ 0.0f };
-	line.origin = { 0.0f,0.5f,-1.26f };
-	line.diff = { 0.0f,0.0f,4.540f };
+
+	AABB aabb1{
+		.min{-0.5f,-0.5f,-0.5f},
+		.max{0.0f,0.0f,0.0f},
+	};
+	AABB aabb2{
+		.min{0.2f,0.2f,0.2f},
+		.max{1.0f,1.0f,1.0f},
+	};
 
 	// ウィンドウの×ボタンが押されるまでループ
 	while (Novice::ProcessMessage() == 0) {
@@ -54,15 +58,14 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR /*lpCmdLine*/,
 		ImGui::Begin("Window");
 		ImGui::DragFloat3("CameraTranslate", &cameraTranslate.x, 0.01f);
 		ImGui::DragFloat3("CameraRotate", &cameraRotate.x, 0.01f);
-		ImGui::DragFloat3("SegmentOrogin", &line.origin.x, 0.01f);
-		ImGui::DragFloat3("SegmentDiff", &line.diff.x, 0.01f);
-		ImGui::DragFloat3("Triangle[0]", &tri.vertices[0].x, 0.01f);
-		ImGui::DragFloat3("Triangle[1]", &tri.vertices[1].x, 0.01f);
-		ImGui::DragFloat3("Triangle[2]", &tri.vertices[2].x, 0.01f);
+		ImGui::DragFloat3("AABB1.min", &aabb1.min.x, 0.01f);
+		ImGui::DragFloat3("AABB1.max", &aabb1.max.x, 0.01f);
+		ImGui::DragFloat3("AABB2.min", &aabb2.min.x, 0.01f);
+		ImGui::DragFloat3("AABB2.max", &aabb2.max.x, 0.01f);
 		ImGui::End();
 
 		//	計算処理
-		if (IsCollision(tri, line))
+		if (IsCollision(aabb1, aabb2))
 		{
 			color = 0xff0000ff;
 		}
@@ -91,12 +94,9 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR /*lpCmdLine*/,
 
 		DrawGrid(viewProjectionMatrix, viewportMatrix);
 
-		Vector3 start = Transform(Transform(line.origin, viewProjectionMatrix), viewportMatrix);
-		Vector3 finish = Transform(Transform(line.diff + line.origin, viewProjectionMatrix), viewportMatrix);
+		DrawAABB(aabb1, viewProjectionMatrix, viewportMatrix, color);
+		DrawAABB(aabb2, viewProjectionMatrix, viewportMatrix, 0xffffffff);
 
-		Novice::DrawLine(static_cast<int>(start.x), static_cast<int>(start.y), static_cast<int>(finish.x), static_cast<int>(finish.y), color);
-
-		DrawTriangle(tri, viewProjectionMatrix, viewportMatrix, color);
 
 		///
 		/// ↑描画処理ここまで
