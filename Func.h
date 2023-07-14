@@ -73,3 +73,6 @@ struct AABB
 bool IsCollision(const AABB& aabb1, const AABB& aabb2);
 //	AABBの描画
 void DrawAABB(const AABB& aabb, const MyMatrix4x4& viewProjectionMatrix, const MyMatrix4x4& viewportMatrix, uint32_t color);
+
+//	AABBと球の衝突判定
+bool IsCollision(const AABB& aabb, const Sphere& sphere);

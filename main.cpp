@@ -32,13 +32,15 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR /*lpCmdLine*/,
 
 	UINT32 color = 0xffffffff;
 
-	AABB aabb1{
+	AABB aabb{
 		.min{-0.5f,-0.5f,-0.5f},
 		.max{0.0f,0.0f,0.0f},
 	};
-	AABB aabb2{
-		.min{0.2f,0.2f,0.2f},
-		.max{1.0f,1.0f,1.0f},
+
+	Sphere sphere{
+		.center{1.0f,1.0f,1.0f},
+		.rotate{0.0f,0.0f,0.0f},
+		.radius{1.0f},
 	};
 
 	// ウィンドウの×ボタンが押されるまでループ
@@ -58,14 +60,14 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR /*lpCmdLine*/,
 		ImGui::Begin("Window");
 		ImGui::DragFloat3("CameraTranslate", &cameraTranslate.x, 0.01f);
 		ImGui::DragFloat3("CameraRotate", &cameraRotate.x, 0.01f);
-		ImGui::DragFloat3("AABB1.min", &aabb1.min.x, 0.01f);
-		ImGui::DragFloat3("AABB1.max", &aabb1.max.x, 0.01f);
-		ImGui::DragFloat3("AABB2.min", &aabb2.min.x, 0.01f);
-		ImGui::DragFloat3("AABB2.max", &aabb2.max.x, 0.01f);
+		ImGui::DragFloat3("AABB1.min", &aabb.min.x, 0.01f);
+		ImGui::DragFloat3("AABB1.max", &aabb.max.x, 0.01f);
+		ImGui::DragFloat3("Sphere.center", &sphere.center.x, 0.01f);
+		ImGui::DragFloat("Sphere.rad", &sphere.radius, 0.01f);
 		ImGui::End();
 
 		//	計算処理
-		if (IsCollision(aabb1, aabb2))
+		if (IsCollision(aabb, sphere))
 		{
 			color = 0xff0000ff;
 		}
@@ -94,8 +96,8 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR /*lpCmdLine*/,
 
 		DrawGrid(viewProjectionMatrix, viewportMatrix);
 
-		DrawAABB(aabb1, viewProjectionMatrix, viewportMatrix, color);
-		DrawAABB(aabb2, viewProjectionMatrix, viewportMatrix, 0xffffffff);
+		DrawAABB(aabb, viewProjectionMatrix, viewportMatrix, color);
+		DrawSphere(sphere, viewProjectionMatrix, viewportMatrix,0xffffffff);
 
 
 		///

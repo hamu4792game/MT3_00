@@ -157,7 +157,7 @@ float Length(const Vector3& vec)
 
 bool IsCollision(const Sphere& s1, const Sphere& s2)
 {
-	if (Length(s2.center - s1.center) <= s1.radius + s2.radius)
+	if (Length(s2.center - s1.center) <= fabs(s1.radius + s2.radius))
 	{
 		return true;
 	}
@@ -169,7 +169,7 @@ bool IsCollision(const Sphere& sphere, const Plane& plane)
 	Vector3 n = Normalize(plane.normal - sphere.center);
 	float num = (Dot(n, sphere.center) - plane.distance);
 
-	if (fabsf(num) <= sphere.radius)
+	if (fabsf(num) <= fabsf(sphere.radius))
 	{
 		return true;
 	}
@@ -361,5 +361,26 @@ void DrawAABB(const AABB& aabb, const MyMatrix4x4& viewProjectionMatrix, const M
 	//	右上
 	Novice::DrawLine(static_cast<int>(ver[3].x), static_cast<int>(ver[3].y), static_cast<int>(ver[7].x), static_cast<int>(ver[7].y), color);
 
+}
+
+bool IsCollision(const AABB& aabb, const Sphere& sphere)
+{
+	//	比較
+	AABB a{};
+	a.min.x = (std::min)(aabb.min.x, aabb.max.x);a.max.x = (std::max)(aabb.min.x, aabb.max.x);
+	a.min.y = (std::min)(aabb.min.y, aabb.max.y);a.max.y = (std::max)(aabb.min.y, aabb.max.y);
+	a.min.z = (std::min)(aabb.min.z, aabb.max.z);a.max.z = (std::max)(aabb.min.z, aabb.max.z);
+	//	最近接点を求める
+	Vector3 closestPoint{ std::clamp(sphere.center.x,a.min.x,a.max.x),
+		std::clamp(sphere.center.y,a.min.y,a.max.y),
+		std::clamp(sphere.center.z,a.min.z,a.max.z) };
+	//	最近接点と球の中心との距離を求める
+	float distance = Length(closestPoint - sphere.center);
+	//	距離が半径よりも小さければ衝突
+	if (distance <= std::fabs(sphere.radius))
+	{
+		return true;
+	}
+	return false;
 }
 
