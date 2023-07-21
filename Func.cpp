@@ -415,3 +415,53 @@ bool IsCollision(const AABB& aabb, const Segment& segment)
 	return false;
 }
 
+bool IsCollision(const OBB& obb, const Sphere& sphere)
+{
+	//	WorldMatrixの生成
+	MyMatrix4x4 worldMat;
+	worldMat.m[0][0] = obb.orientations[0].x;worldMat.m[0][1] = obb.orientations[1].x;worldMat.m[0][2] = obb.orientations[2].x;
+	worldMat.m[1][0] = obb.orientations[0].y;worldMat.m[1][1] = obb.orientations[1].y;worldMat.m[1][2] = obb.orientations[2].y;
+	worldMat.m[2][0] = obb.orientations[0].z;worldMat.m[2][1] = obb.orientations[1].z;worldMat.m[2][2] = obb.orientations[2].z;
+	worldMat.m[3][0] = obb.center.x; worldMat.m[3][1] = obb.center.y; worldMat.m[3][2] = obb.center.z; worldMat.m[3][3] = 1.0f;
+
+	Vector3 centerInOBBLocalSpace = Transform(sphere.center, Inverse(worldMat));
+	
+	AABB obbLocal{ {-obb.size.x,-obb.size.y,-obb.size.z},obb.size };
+
+	Sphere sphereLocal{ centerInOBBLocalSpace,sphere.rotate,sphere.radius };
+	if (IsCollision(obbLocal, sphereLocal))
+	{
+		return true;
+	}
+	return false;
+}
+
+void DrawOBB(const OBB& obb, const MyMatrix4x4& viewProjectionMatrix, const MyMatrix4x4& viewportMatrix, uint32_t color)
+{
+	MyMatrix4x4 worldMat;
+	worldMat.m[0][0] = obb.orientations[0].x; worldMat.m[0][1] = obb.orientations[1].x; worldMat.m[0][2] = obb.orientations[2].x;
+	worldMat.m[1][0] = obb.orientations[0].y; worldMat.m[1][1] = obb.orientations[1].y; worldMat.m[1][2] = obb.orientations[2].y;
+	worldMat.m[2][0] = obb.orientations[0].z; worldMat.m[2][1] = obb.orientations[1].z; worldMat.m[2][2] = obb.orientations[2].z;
+	worldMat.m[3][0] = obb.center.x; worldMat.m[3][1] = obb.center.y; worldMat.m[3][2] = obb.center.z; worldMat.m[3][3] = 1.0f;
+
+	AABB obbLocal{ {-obb.size.x,-obb.size.y,-obb.size.z},obb.size };
+	DrawAABB(obbLocal, worldMat * viewProjectionMatrix, viewportMatrix, color);
+}
+
+OBB SetOBB(const OBB& obb, const MyMatrix4x4& rotateMatrix)
+{
+	OBB result = obb;
+	result.orientations[0].x = rotateMatrix.m[0][0];
+	result.orientations[0].y = rotateMatrix.m[0][1];
+	result.orientations[0].z = rotateMatrix.m[0][2];
+
+	result.orientations[1].x = rotateMatrix.m[1][0];
+	result.orientations[1].y = rotateMatrix.m[1][1];
+	result.orientations[1].z = rotateMatrix.m[1][2];
+
+	result.orientations[2].x = rotateMatrix.m[2][0];
+	result.orientations[2].y = rotateMatrix.m[2][1];
+	result.orientations[2].z = rotateMatrix.m[2][2];
+
+	return result;
+}

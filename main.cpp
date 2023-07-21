@@ -32,14 +32,19 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR /*lpCmdLine*/,
 
 	UINT32 color = 0xffffffff;
 
-	AABB aabb{
-		.min{-0.5f,-0.5f,-0.5f},
-		.max{0.5f,0.5f,0.5f},
-	};
+	Vector3 rotate{ 0.0f,20.0f,30.0f };
 
-	Segment segment{
-		.origin{-0.7f,0.3f,0.0f},
-		.diff{2.0f,-0.5f,0.0f},
+	OBB obb{
+		.center{-1.0f,0.0f,0.0f},
+		.orientations{{1.0f,0.0f,0.0f},
+		{0.0f,1.0f,0.0f},
+		{0.0f,0.0f,1.0f}},
+		.size{0.5f,0.5f,0.5f},
+	};
+	Sphere sphere{
+		.center{0.0f,0.0f},
+		.rotate{0.0f},
+		.radius{0.5f},
 	};
 
 	// ウィンドウの×ボタンが押されるまでループ
@@ -59,14 +64,15 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR /*lpCmdLine*/,
 		ImGui::Begin("Window");
 		ImGui::DragFloat3("CameraTranslate", &cameraTranslate.x, 0.01f);
 		ImGui::DragFloat3("CameraRotate", &cameraRotate.x, 0.01f);
-		ImGui::DragFloat3("AABB1.min", &aabb.min.x, 0.01f);
-		ImGui::DragFloat3("AABB1.max", &aabb.max.x, 0.01f);
-		ImGui::DragFloat3("Segment.origin", &segment.origin.x, 0.01f);
-		ImGui::DragFloat3("Segment.diff", &segment.diff.x, 0.01f);
+		ImGui::DragFloat3("rotate", &rotate.x, 0.01f);
+		ImGui::DragFloat3("obb", &obb.center.x, 0.01f);
 		ImGui::End();
 
+		MyMatrix4x4 rotateMatrix = MakeRotateXMatrix(rotate.x) * MakeRotateYMatrix(rotate.y) * MakeRotateZMatrix(rotate.z);
+		obb = SetOBB(obb, rotateMatrix);
+		
 		//	計算処理
-		if (IsCollision(aabb, segment))
+		if (IsCollision(obb, sphere))
 		{
 			color = 0xff0000ff;
 		}
@@ -94,9 +100,9 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR /*lpCmdLine*/,
 
 		DrawGrid(viewProjectionMatrix, viewportMatrix);
 
-		DrawAABB(aabb, viewProjectionMatrix, viewportMatrix, color);
+		DrawSphere(sphere, viewProjectionMatrix, viewportMatrix, color);
 
-		DrawSegment(segment, viewProjectionMatrix, viewportMatrix, 0xffffffff);
+		DrawOBB(obb, viewProjectionMatrix, viewportMatrix, color);
 
 
 		///
