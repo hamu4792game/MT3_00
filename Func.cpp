@@ -129,6 +129,14 @@ void DrawSphere(const Sphere& sphere, const MyMatrix4x4& viewProjectionMatrix, c
 
 }
 
+void DrawSegment(const Segment& segment, const MyMatrix4x4& viewProjectionMatrix, const MyMatrix4x4& viewportMatrix, uint32_t color)
+{
+	//	座標変換処理
+	Vector3 start = Transform(Transform(segment.origin, viewProjectionMatrix), viewportMatrix);
+	Vector3 finish = Transform(Transform(segment.diff + segment.origin, viewProjectionMatrix), viewportMatrix);
+	Novice::DrawLine(static_cast<int>(start.x), static_cast<int>(start.y), static_cast<int>(finish.x), static_cast<int>(finish.y), color);
+}
+
 Vector3 Project(const Vector3& v1, const Vector3& v2)
 {
 	Vector3 result{};
@@ -381,6 +389,29 @@ bool IsCollision(const AABB& aabb, const Sphere& sphere)
 	{
 		return true;
 	}
+	return false;
+}
+
+bool IsCollision(const AABB& aabb, const Segment& segment)
+{
+	//	媒介変数を求める
+	Vector3 tmin{};Vector3 tmax{};
+	tmin = (aabb.min - segment.origin) / segment.diff;
+	tmax = (aabb.max - segment.origin) / segment.diff;
+	//	衝突点の近い方と遠い方(tの大きさ)を求める
+	Vector3 tNear{}; Vector3 tFar{};
+	tNear.x = (std::min)(tmin.x, tmax.x);tNear.y = (std::min)(tmin.y, tmax.y);tNear.z = (std::min)(tmin.z, tmax.z);
+	tFar.x = (std::max)(tmin.x, tmax.x);tFar.y = (std::max)(tmin.y, tmax.y);tFar.z = (std::max)(tmin.z, tmax.z);
+
+	float tmin_ = (std::max)((std::max)(tNear.x, tNear.y), tNear.z);
+	float tmax_ = (std::min)((std::min)(tFar.x, tFar.y), tFar.z);
+
+	//	衝突
+	if (0.0f <= tmax_ && tmin_ <= tmax_ && tmin_ <= 1.0f)
+	{
+		return true;
+	}
+
 	return false;
 }
 

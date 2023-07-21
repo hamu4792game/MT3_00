@@ -2,6 +2,7 @@
 #include "MyMatrix4x4/MyMatrix4x4.h"
 #include "Vector3.h"
 
+//	格子の描画
 void DrawGrid(const MyMatrix4x4& viewProjectionMatrix, const MyMatrix4x4& viewportMatrix);
 
 struct Sphere
@@ -11,6 +12,7 @@ struct Sphere
 	float radius;
 };
 
+//	球の描画
 void DrawSphere(const Sphere& sphere, const MyMatrix4x4& viewProjectionMatrix, const MyMatrix4x4& viewportMatrix, uint32_t color);
 
 //	直線
@@ -32,12 +34,17 @@ struct Segment
 	Vector3 diff;	// 終点への差分ベクトル
 };
 
+//	線分の描画
+void DrawSegment(const Segment& segment, const MyMatrix4x4& viewProjectionMatrix, const MyMatrix4x4& viewportMatrix, uint32_t color);
+
 Vector3 Project(const Vector3& v1, const Vector3& v2);
 
 Vector3 ClosestPoint(const Vector3& point, const Segment& segment);
 
+//	長さを求める
 float Length(const Vector3& vec);
 
+//	球と球の衝突判定
 bool IsCollision(const Sphere& s1, const Sphere& s2);
 
 //	平面
@@ -46,12 +53,13 @@ struct Plane {
 	float distance;	//	距離
 };
 
-//	おーばーろーど
+//	球と平面の衝突判定
 bool IsCollision(const Sphere& sphere, const Plane& plane);
 
 Vector3 Perpendicular(const Vector3& vector);
 void DrawPlane(const Plane& plane, const MyMatrix4x4& viewProjectionMatrix, const MyMatrix4x4& viewportMatrix, uint32_t color);
 
+//	線分と平面の衝突判定
 bool IsCollision(const Segment& line, const Plane& plane);
 
 //	三角形
@@ -76,3 +84,6 @@ void DrawAABB(const AABB& aabb, const MyMatrix4x4& viewProjectionMatrix, const M
 
 //	AABBと球の衝突判定
 bool IsCollision(const AABB& aabb, const Sphere& sphere);
+
+//	AABBと線分の衝突判定
+bool IsCollision(const AABB& aabb, const Segment& segment);
