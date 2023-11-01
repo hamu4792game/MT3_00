@@ -32,19 +32,24 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR /*lpCmdLine*/,
 
 	UINT32 color = 0xffffffff;
 
-	Vector3 rotate{ 0.0f,20.0f,30.0f };
+	Vector3 rotate{ 0.0f,0.0f,0.0f };
+	//Vector3 rotate2{ -0.05f,-2.49f,0.15f };
+	Vector3 rotate2{ 0.0f,0.0f,0.0f };
 
 	OBB obb{
-		.center{-1.0f,0.0f,0.0f},
+		.center{0.0f,0.0f,0.0f},
 		.orientations{{1.0f,0.0f,0.0f},
 		{0.0f,1.0f,0.0f},
 		{0.0f,0.0f,1.0f}},
-		.size{0.5f,0.5f,0.5f},
+		.size{0.83f,0.26f,0.24f},
 	};
-	Sphere sphere{
-		.center{0.0f,0.0f},
-		.rotate{0.0f},
-		.radius{0.5f},
+	OBB obb2{
+		//.center{0.9f,0.66f,0.78f},
+		.center{0.9f,0.66f,0.0f},
+		.orientations{{1.0f,0.0f,0.0f},
+		{0.0f,1.0f,0.0f},
+		{0.0f,0.0f,1.0f}},
+		.size{0.5f,0.37f,0.5f},
 	};
 
 	// ウィンドウの×ボタンが押されるまでループ
@@ -70,9 +75,11 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR /*lpCmdLine*/,
 
 		MyMatrix4x4 rotateMatrix = MakeRotateXMatrix(rotate.x) * MakeRotateYMatrix(rotate.y) * MakeRotateZMatrix(rotate.z);
 		obb = SetOBB(obb, rotateMatrix);
+		MyMatrix4x4 rotateMatrix2 = MakeRotateXMatrix(rotate2.x) * MakeRotateYMatrix(rotate2.y) * MakeRotateZMatrix(rotate2.z);
+		obb2 = SetOBB(obb2, rotateMatrix2);
 		
 		//	計算処理
-		if (IsCollision(obb, sphere))
+		if (IsCollision(obb, obb2))
 		{
 			color = 0xff0000ff;
 		}
@@ -100,9 +107,8 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR /*lpCmdLine*/,
 
 		DrawGrid(viewProjectionMatrix, viewportMatrix);
 
-		DrawSphere(sphere, viewProjectionMatrix, viewportMatrix, color);
-
 		DrawOBB(obb, viewProjectionMatrix, viewportMatrix, color);
+		DrawOBB(obb2, viewProjectionMatrix, viewportMatrix, color);
 
 
 		///

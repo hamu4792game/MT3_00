@@ -465,3 +465,113 @@ OBB SetOBB(const OBB& obb, const MyMatrix4x4& rotateMatrix)
 
 	return result;
 }
+
+bool IsCollision(const OBB& obb, const OBB& obb2)
+{
+	Vector3 L = obb.orientations[0];
+	Vector3 interval = obb.center - obb2.center;
+
+	Vector3 NAe[3]{};
+	Vector3 Ae[3]{};
+	for (short i = 0; i < 3; i++) {
+		NAe[i] = obb.orientations[i];
+		Ae[i] = NAe[i] * Length(obb.size);
+	}
+	Vector3 NBe[3]{};
+	Vector3 Be[3]{};
+	for (short i = 0; i < 3; i++) {
+		NBe[i] = obb2.orientations[i];
+		Be[i] = NBe[i] * Length(obb2.size);
+	}
+	float ra = 0.0, rb = 0.0;
+
+	// 分離軸がobbのx
+
+	for (short i = 0; i < 3; i++) {
+		L = NAe[i];
+
+		ra = Length(Ae[i]);
+		rb = fabsf(fabsf(Dot(L, Be[0])) + fabsf(Dot(L, Be[1])) + fabsf(Dot(L, Be[2])));
+
+		if (fabsf(Dot(interval, L)) > ra + rb) {
+			return false;
+		}
+	}
+	for (short i = 0; i < 3; i++) {
+		L = NBe[i];
+
+		ra = fabsf(fabsf(Dot(L, Ae[0])) + fabsf(Dot(L, Ae[1])) + fabsf(Dot(L, Ae[2])));
+		rb = Length(Be[i]);
+
+		if (fabsf(Dot(interval, L)) > ra + rb) {
+			return false;
+		}
+	}
+	Vector3 clossNum;
+
+	clossNum = Cross(NAe[0], NBe[0]);
+	ra = fabsf(fabsf(Dot(L, Ae[1])) + fabsf(Dot(L, Ae[2])));
+	rb = fabsf(fabsf(Dot(L, Be[1])) + fabsf(Dot(L, Be[2])));
+	if (fabsf(Dot(interval, clossNum)) > ra + rb) {
+		return false;
+	}
+
+	clossNum = Cross(NAe[0], NBe[1]);
+	ra = fabsf(fabsf(Dot(L, Ae[1])) + fabsf(Dot(L, Ae[2])));
+	rb = fabsf(fabsf(Dot(L, Be[0])) + fabsf(Dot(L, Be[2])));
+	if (fabsf(Dot(interval, clossNum)) > ra + rb) {
+		return false;
+	}
+
+	clossNum = Cross(NAe[0], NBe[2]);
+	ra = fabsf(fabsf(Dot(L, Ae[1])) + fabsf(Dot(L, Ae[2])));
+	rb = fabsf(fabsf(Dot(L, Be[0])) + fabsf(Dot(L, Be[1])));
+	if (fabsf(Dot(interval, clossNum)) > ra + rb) {
+		return false;
+	}
+//-----------------------------	
+	clossNum = Cross(NAe[1], NBe[0]);
+	ra = fabsf(fabsf(Dot(L, Ae[0])) + fabsf(Dot(L, Ae[2])));
+	rb = fabsf(fabsf(Dot(L, Be[1])) + fabsf(Dot(L, Be[2])));
+	if (fabsf(Dot(interval, clossNum)) > ra + rb) {
+		return false;
+	}
+
+	clossNum = Cross(NAe[1], NBe[1]);
+	ra = fabsf(fabsf(Dot(L, Ae[0])) + fabsf(Dot(L, Ae[2])));
+	rb = fabsf(fabsf(Dot(L, Be[0])) + fabsf(Dot(L, Be[2])));
+	if (fabsf(Dot(interval, clossNum)) > ra + rb) {
+		return false;
+	}
+
+	clossNum = Cross(NAe[1], NBe[2]);
+	ra = fabsf(fabsf(Dot(L, Ae[0])) + fabsf(Dot(L, Ae[2])));
+	rb = fabsf(fabsf(Dot(L, Be[0])) + fabsf(Dot(L, Be[1])));
+	if (fabsf(Dot(interval, clossNum)) > ra + rb) {
+		return false;
+	}
+//-----------------------------	
+	clossNum = Cross(NAe[2], NBe[0]);
+	ra = fabsf(fabsf(Dot(L, Ae[0])) + fabsf(Dot(L, Ae[1])));
+	rb = fabsf(fabsf(Dot(L, Be[1])) + fabsf(Dot(L, Be[2])));
+	if (fabsf(Dot(interval, clossNum)) > ra + rb) {
+		return false;
+	}
+
+	clossNum = Cross(NAe[2], NBe[1]);
+	ra = fabsf(fabsf(Dot(L, Ae[0])) + fabsf(Dot(L, Ae[1])));
+	rb = fabsf(fabsf(Dot(L, Be[0])) + fabsf(Dot(L, Be[2])));
+	if (fabsf(Dot(interval, clossNum)) > ra + rb) {
+		return false;
+	}
+
+	clossNum = Cross(NAe[2], NBe[2]);
+	ra = fabsf(fabsf(Dot(L, Ae[0])) + fabsf(Dot(L, Ae[1])));
+	rb = fabsf(fabsf(Dot(L, Be[0])) + fabsf(Dot(L, Be[1])));
+	if (fabsf(Dot(interval, clossNum)) > ra + rb) {
+		return false;
+	}
+	
+
+	return true;
+}

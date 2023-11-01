@@ -98,3 +98,6 @@ bool IsCollision(const OBB& obb, const Sphere& sphere);
 void DrawOBB(const OBB& obb, const MyMatrix4x4& viewProjectionMatrix, const MyMatrix4x4& viewportMatrix, uint32_t color);
 //	回転のセット
 OBB SetOBB(const OBB& obb, const MyMatrix4x4& rotateMatrix);
+
+//	OBBとOBBの衝突判定
+bool IsCollision(const OBB& obb, const OBB& obb2);
